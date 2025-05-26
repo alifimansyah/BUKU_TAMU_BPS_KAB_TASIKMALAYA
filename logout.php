@@ -1,15 +1,15 @@
 <?php
 session_start();
+include 'config/koneksi.php';
 
-error_log("Session before destroy: " . session_id());
+// Jika ingin update status user di database menjadi false (0)
+if (isset($_SESSION['username'])) {
+    $username = $_SESSION['username'];
+    mysqli_query($koneksi, "UPDATE tb_operator SET status=0 WHERE username='$username'");
+}
 
 session_unset();
-session_destroy();  // Hancurkan sesi
-
-// Debugging: Cek apakah sesi sudah dihancurkan
-error_log("Session after destroy: " . session_id());
-
-header('Location: index.php');  // Arahkan ke halaman login
-exit;
-
-// https://github.com/Madleyym/Rental-Mobil/blob/main/logout.php
+session_destroy();
+header('Location: login.php');
+exit();
+?>

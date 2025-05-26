@@ -12,13 +12,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['tambah_pengunjung'])) 
     $keperluan = $_POST['keperluan'];
     $keterangan_keperluan = $_POST['keterangan_keperluan'] ?? null;
     $no_wa = $_POST['no_wa'];
-    $kesan = $_POST['kesan'];
+    $kesan_pelayanan = $_POST['kesan_pelayanan'];
 
     $query = "INSERT INTO tamu_umum (tanggal, Jenis_Tamu, nama, instansi, nama_instansi, keperluan, keterangan_keperluan, No_wa_Aktif, `kesan pelayanan`) 
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = mysqli_prepare($koneksi, $query);
-    mysqli_stmt_bind_param($stmt, "sssssssss", $tanggal, $jenis_tamu, $nama, $instansi, $nama_instansi, $keperluan, $keterangan_keperluan, $no_wa, $kesan);
+    mysqli_stmt_bind_param($stmt, "sssssssss", $tanggal, $jenis_tamu, $nama, $instansi, $nama_instansi, $keperluan, $keterangan_keperluan, $no_wa, $kesan_pelayanan);
     
     if (mysqli_stmt_execute($stmt)) {
         $_SESSION['success'] = "Data pengunjung berhasil ditambahkan";
@@ -136,10 +136,8 @@ $result = mysqli_query($koneksi, $query);
                                 <label for="jenis_tamu" class="form-label">Jenis Tamu</label>
                                 <select class="form-select" id="jenis_tamu" name="jenis_tamu" required>
                                     <option value="">Pilih Jenis Tamu</option>
-                                    <option value="Umum">Umum</option>
-                                    <option value="Instansi">Instansi</option>
-                                    <option value="Mahasiswa">Mahasiswa</option>
-                                    <option value="Peneliti">Peneliti</option>
+                                    <option value="Umum">Tamu Umum </option>
+                                    <option value="Instansi">Tamu PST</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -152,11 +150,11 @@ $result = mysqli_query($koneksi, $query);
                             <div class="col-md-6">
                                 <label for="instansi" class="form-label">Instansi</label>
                                 <select class="form-select" id="instansi" name="instansi" required>
-                                    <option value="">Pilih Instansi</option>
-                                    <option value="Pemerintah">Pemerintah</option>
-                                    <option value="Swasta">Swasta</option>
-                                    <option value="Pendidikan">Pendidikan</option>
-                                    <option value="Lainnya">Lainnya</option>
+                                    <option value="">Pilih Asal Tamu</option>
+                                    <option value="Pemerintah">Instansi/Dinas/Lembaga Pemerintah</option>
+                                    <option value="Swasta">Perusahaan Swasta</option>
+                                    <option value="Pendidikan">Pelajar/Mahasiswa</option>
+                                    <option value="Perorangan">Masyarakat Umum</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -169,12 +167,11 @@ $result = mysqli_query($koneksi, $query);
                             <div class="col-md-6">
                                 <label for="keperluan" class="form-label">Keperluan</label>
                                 <select class="form-select" id="keperluan" name="keperluan" required>
-                                    <option value="">Pilih Keperluan</option>
-                                    <option value="Konsultasi">Konsultasi</option>
-                                    <option value="Pengambilan Data">Pengambilan Data</option>
-                                    <option value="Penelitian">Penelitian</option>
-                                    <option value="Lainnya">Lainnya</option>
-                                </select>
+                                     <option value="" disabled selected>Pilih keperluan kunjungan</option>
+                                     <option value="Konsultasi Statistik">Konsultasi Data Statistik</option>
+                                     <option value="Perpustakaan">Layanan Perpustakaan</option>
+                                     <option value="Rekomendasi kegiatan statistik">Pelayanan Rekomendasi Kegiatan Statistik</option>
+                                    </select>
                             </div>
                             <div class="col-md-6">
                                 <label for="keterangan_keperluan" class="form-label">Keterangan Keperluan</label>
@@ -189,12 +186,11 @@ $result = mysqli_query($koneksi, $query);
                             </div>
                             <div class="col-md-6">
                                 <label for="kesan" class="form-label">Kesan Pelayanan</label>
-                                <select class="form-select" id="kesan" name="kesan" required>
-                                    <option value="">Pilih Kesan</option>
-                                    <option value="Sangat Puas">Sangat Puas</option>
-                                    <option value="Puas">Puas</option>
-                                    <option value="Cukup">Cukup</option>
-                                    <option value="Kurang Puas">Kurang Puas</option>
+                                    <label><input type="radio" name="kesan_pelayanan" value="1 😞 Buruk" required> 😞 Buruk</label>
+                        <label><input type="radio" name="kesan_pelayanan" value="2 😐 Kurang Baik"> 😐 Kurang Baik</label>
+                        <label><input type="radio" name="kesan_pelayanan" value="3 🙂 Cukup"> 🙂 Cukup</label>
+                        <label><input type="radio" name="kesan_pelayanan" value="4 😊 Baik"> 😊 Baik</label>
+                        <label><input type="radio" name="kesan_pelayanan" value="5 😍 Baik Sekali"> 😍 Baik Sekali</label>>
                                 </select>
                             </div>
                         </div>

@@ -1,5 +1,24 @@
+<?php
+include 'config/koneksi.php';
+
+// Ambil data operator yang sedang online (status = 1/true)
+$query_petugas = mysqli_query($koneksi, "SELECT * FROM tb_operator WHERE status=1 LIMIT 1");
+$petugas = mysqli_fetch_assoc($query_petugas);
+
+if ($petugas) {
+    $nama_petugas = $petugas['Nama'];
+    $nip_petugas = $petugas['NIP'];
+    $foto_petugas = !empty($petugas['foto']) ? $petugas['foto'] : 'assets/img/default-user.png';
+} else {
+    $nama_petugas = '';
+    $nip_petugas = '';
+    $foto_petugas = 'assets/img/default-user.png';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +34,7 @@
             --bps-blue: #005bae;
             --bps-red: #e30613;
             --border-radius: 10px;
-            --box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         * {
@@ -26,7 +45,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('assets/img/bps-pattern.png');
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('assets/img/bps-pattern.png');
             background-size: cover;
             color: #333;
             line-height: 1.6;
@@ -81,7 +100,7 @@
             display: flex;
             align-items: center;
             padding: 20px;
-            background-color: rgba(10,158,63,0.1);
+            background-color: rgba(10, 158, 63, 0.1);
             border-bottom: 1px solid #eee;
         }
 
@@ -92,7 +111,7 @@
             object-fit: cover;
             border: 3px solid var(--bps-gold);
             margin-right: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
 
         .officer-details {
@@ -159,7 +178,7 @@
         select:focus,
         textarea:focus {
             border-color: var(--bps-green);
-            box-shadow: 0 0 0 3px rgba(10,158,63,0.1);
+            box-shadow: 0 0 0 3px rgba(10, 158, 63, 0.1);
             outline: none;
         }
 
@@ -189,12 +208,12 @@
             background: linear-gradient(135deg, var(--bps-green), var(--bps-dark-green));
             color: white;
             margin-right: 15px;
-            box-shadow: 0 4px 15px rgba(10,158,63,0.3);
+            box-shadow: 0 4px 15px rgba(10, 158, 63, 0.3);
         }
 
         .btn-submit:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(10,158,63,0.4);
+            box-shadow: 0 6px 20px rgba(10, 158, 63, 0.4);
         }
 
         .btn-back {
@@ -239,7 +258,7 @@
 
         .radio-option:hover {
             border-color: var(--bps-green);
-            background-color: rgba(10,158,63,0.05);
+            background-color: rgba(10, 158, 63, 0.05);
         }
 
         .radio-option input {
@@ -251,25 +270,25 @@
             .container {
                 padding: 10px;
             }
-            
+
             .form-header h2 {
                 font-size: 22px;
             }
-            
+
             .officer-info {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .officer-photo {
                 margin-right: 0;
                 margin-bottom: 15px;
             }
-            
+
             .form-footer {
                 flex-direction: column;
             }
-            
+
             .btn-submit,
             .btn-back {
                 width: 100%;
@@ -280,30 +299,60 @@
 
         /* Animasi */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .form-group {
             animation: fadeIn 0.5s ease forwards;
         }
 
-        .form-group:nth-child(1) { animation-delay: 0.1s; }
-        .form-group:nth-child(2) { animation-delay: 0.2s; }
-        .form-group:nth-child(3) { animation-delay: 0.3s; }
-        .form-group:nth-child(4) { animation-delay: 0.4s; }
-        .form-group:nth-child(5) { animation-delay: 0.5s; }
-        .form-group:nth-child(6) { animation-delay: 0.6s; }
-        .form-group:nth-child(7) { animation-delay: 0.7s; }
-        .form-group:nth-child(8) { animation-delay: 0.8s; }
-        
+        .form-group:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .form-group:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .form-group:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .form-group:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        .form-group:nth-child(7) {
+            animation-delay: 0.7s;
+        }
+
+        .form-group:nth-child(8) {
+            animation-delay: 0.8s;
+        }
+
         .rating-container {
             display: flex;
             justify-content: space-between;
             margin-top: 10px;
             flex-wrap: wrap;
         }
-        
+
         .rating-container label {
             display: flex;
             align-items: center;
@@ -314,21 +363,22 @@
             margin-bottom: 5px;
             background-color: #f5f5f5;
         }
-        
+
         .rating-container label:hover {
             background-color: #e0e0e0;
         }
-        
+
         .rating-container input[type="radio"] {
             margin-right: 8px;
             transform: scale(1.2);
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header-logo">
-            <img src="assets/img/logo_bps.png" alt="BPS Logo">
+            <img src="uploads/logo pst (1).svg" alt="BPS Logo">
             <h2>BUKU TAMU UMUM</h2>
         </div>
 
@@ -359,7 +409,7 @@
 
             <form action="submit_umum.php" method="POST">
                 <input type="hidden" name="tanggal" value="<?= $current_datetime ?>">
-                
+
                 <div class="form-group">
                     <label for="Jenis_Tamu"><i class="fas fa-users"></i> Jenis Tamu</label>
                     <select id="Jenis_Tamu" name="Jenis_Tamu" required>
@@ -368,12 +418,12 @@
                         <option value="PST">Tamu PST</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="nama"><i class="fas fa-user"></i> Nama Lengkap</label>
                     <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="instansi"><i class="fas fa-building"></i> Asal Tamu</label>
                     <select id="instansi" name="instansi" required>
@@ -384,37 +434,38 @@
                         <option value="Perorangan">Masyarakat Umum</option>
                     </select>
                 </div>
-                
-              <div class="form-group">
-    <label for="nama_instansi"><i class="fas fa-landmark"></i> Nama Instansi/Institusi</label>
-    <input type="text" id="nama_instansi" name="nama_instansi" placeholder="Masukkan nama lengkap instansi/institusi" required>
-</div>
 
-<div class="form-group">
-    <label for="keperluan"><i class="fas fa-tasks"></i> Keperluan Kunjungan</label>
-    <select id="keperluan" name="keperluan" required>
-        <option value="" disabled selected>Pilih keperluan kunjungan</option>
-        <option value="Konsultasi Statistik">Konsultasi Data Statistik</option>
-        <option value="Perpustakaan">Layanan Perpustakaan</option>
-         <option value="Rekomendasi kegiatan statistik">Layanan Perpustakaan</option>
-    </select>
-</div>
-                
                 <div class="form-group">
-                    <label for="keterangan"><i class="fas fa-edit"></i> Keterangan Keperluan</label>
-                    <textarea id="keterangan" name="keterangan_keterangan" placeholder="Jelaskan secara detail keperluan kunjungan Anda" required></textarea>
+                    <label for="nama_instansi"><i class="fas fa-landmark"></i> Nama Instansi/Dinas/Lembaga Pemerintah/Perusahaan Swasta/Mahasiswa</label>
+                    <input type="text" id="nama_instansi" name="nama_instansi" placeholder="Masukkan nama lengkap instansi/institusi" required>
                 </div>
-                
+
+                <div class="form-group">
+                    <label for="keperluan"><i class="fas fa-tasks"></i> Keperluan Kunjungan</label>
+                    <select id="keperluan" name="keperluan" required>
+                        <option value="" disabled selected>Pilih keperluan kunjungan</option>
+                        <option value="Konsultasi Statistik">Konsultasi Data Statistik</option>
+                        <option value="Perpustakaan">Layanan Perpustakaan</option>
+                        <option value="Rekomendasi kegiatan statistik">Pelayanan Rekomendasi Kegiatan Statistik</option>
+                        <option value="Pengaduan">Pengaduan</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="keterangan_keperluan"><i class="fas fa-edit"></i> Keterangan Keperluan</label>
+                    <textarea id="keterangan_keperluan" name="keterangan_keperluan" placeholder="Jelaskan secara detail keperluan kunjungan Anda" required></textarea>
+                </div>
+
                 <div class="form-group">
                     <label for="wa"><i class="fab fa-whatsapp"></i> Nomor WhatsApp Aktif</label>
                     <input type="tel" id="wa" name="No_wa_Aktif" placeholder="Contoh: 8123456789" pattern="[0-9]{9,13}" required>
                     <small>Masukkan nomor tanpa 0 di depan (contoh: 8123456789)</small>
                 </div>
-                
+
                 <div class="form-group">
                     <label><i class="fas fa-star"></i> Rating Pelayanan</label>
                     <div class="rating-container">
-                        <label><input type="radio" name="kesan_pelayanan" value="1 😞 Buruk" required> 😞 Buruk</label>
+                        <label><input type="radio" name="kesan_pelayanan" value="1 😞 Buruk">😞 Buruk</label>
                         <label><input type="radio" name="kesan_pelayanan" value="2 😐 Kurang Baik"> 😐 Kurang Baik</label>
                         <label><input type="radio" name="kesan_pelayanan" value="3 🙂 Cukup"> 🙂 Cukup</label>
                         <label><input type="radio" name="kesan_pelayanan" value="4 😊 Baik"> 😊 Baik</label>
@@ -434,16 +485,16 @@
         // Update waktu secara real-time
         function updateClock() {
             const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit'
             };
-            document.getElementById('realTimeClock').textContent = 
+            document.getElementById('realTimeClock').textContent =
                 now.toLocaleDateString('id-ID', options);
         }
         setInterval(updateClock, 1000);
@@ -453,16 +504,16 @@
         document.getElementById('nama')?.addEventListener('input', function() {
             this.value = this.value.toUpperCase();
         });
-        
+
         document.getElementById('nama_instansi')?.addEventListener('input', function() {
             this.value = this.value.toUpperCase();
         });
-        
+
         // Validasi nomor WA
         document.getElementById('wa')?.addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
         });
-        
+
         // Efek interaktif untuk radio button
         document.querySelectorAll('.radio-option input').forEach(radio => {
             radio.addEventListener('change', function() {
@@ -478,4 +529,5 @@
         });
     </script>
 </body>
+
 </html>
