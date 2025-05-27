@@ -346,32 +346,6 @@ if ($petugas) {
             animation-delay: 0.8s;
         }
 
-        .rating-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-
-        .rating-container label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 5px;
-            transition: all 0.2s;
-            margin-bottom: 5px;
-            background-color: #f5f5f5;
-        }
-
-        .rating-container label:hover {
-            background-color: #e0e0e0;
-        }
-
-        .rating-container input[type="radio"] {
-            margin-right: 8px;
-            transform: scale(1.2);
-        }
     </style>
 </head>
 
@@ -462,16 +436,6 @@ if ($petugas) {
                     <small>Masukkan nomor tanpa 0 di depan (contoh: 8123456789)</small>
                 </div>
 
-                <div class="form-group">
-                    <label><i class="fas fa-star"></i> Rating Pelayanan</label>
-                    <div class="rating-container">
-                        <label><input type="radio" name="kesan_pelayanan" value="1 😞 Buruk">😞 Buruk</label>
-                        <label><input type="radio" name="kesan_pelayanan" value="2 😐 Kurang Baik"> 😐 Kurang Baik</label>
-                        <label><input type="radio" name="kesan_pelayanan" value="3 🙂 Cukup"> 🙂 Cukup</label>
-                        <label><input type="radio" name="kesan_pelayanan" value="4 😊 Baik"> 😊 Baik</label>
-                        <label><input type="radio" name="kesan_pelayanan" value="5 😍 Baik Sekali"> 😍 Baik Sekali</label>
-                    </div>
-                </div>
 
                 <div class="form-footer">
                     <button type="submit" class="btn-submit"><i class="fas fa-save"></i> SIMPAN DATA</button>
