@@ -12,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $keperluan     = strtoupper(trim($_POST['keperluan']));
     $keterangan_keperluan = strtoupper(trim($_POST['keterangan_keperluan']));
     $no_wa         = preg_replace('/[^0-9]/', '', $_POST['No_wa_Aktif']);
-    $kesan_pelayanan = $_POST['kesan_pelayanan']; // ini yang benar
 
     // Ambil nama petugas (operator) yang sedang online
     $petugas = '';
@@ -29,10 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $query = "INSERT INTO tamu_umum (
                 tanggal, Jenis_Tamu, nama, instansi, 
-                nama_instansi, keperluan, keterangan_keperluan, No_wa_Aktif, `kesan pelayanan`, petugas
+                nama_instansi, keperluan, keterangan_keperluan, No_wa_Aktif, petugas
               ) VALUES (
                 '$tanggal', '$jenis_Tamu', '$nama', '$instansi', 
-                '$nama_instansi', '$keperluan', '$keterangan_keperluan', '$no_wa', '$kesan_pelayanan', '$petugas'
+                '$nama_instansi', '$keperluan', '$keterangan_keperluan', '$no_wa', '$petugas'
               )";
 
     if (mysqli_query($koneksi, $query)) {
