@@ -185,8 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <select class="form-control" id="role" name="role" required>
                                             <option value="">Pilih Role</option>
                                             <option value="adminPST" <?= $pegawai['Role'] == 'adminPST' ? 'selected' : '' ?>>Admin PST</option>
-                                            <option value="Petugas PS" <?= $pegawai['Role'] == 'Petugas PS' ? 'selected' : '' ?>>Petugas PS</option>
-                                            <option value="Staff" <?= $pegawai['Role'] == 'Staff' ? 'selected' : '' ?>>Staff</option>
+                                            <option value="Petugas PS" <?= $pegawai['Role'] == 'Petugas PS' ? 'selected' : '' ?>>Petugas PST</option>
                                         </select>
                                     </div>
                                 </div>

@@ -20,11 +20,11 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         header('Location: table pengunjung petugas.php');
         exit();
     } else {
-        header('Location: login.php?error=Username atau Password salah!');
+        header('Location: index.php?error=Username atau Password salah!');
         exit();
     }
 } else {
-    header('Location: login.php?error=Data tidak valid!');
+    header('Location: index.php?error=Data tidak valid!');
     exit();
 }
 ?>

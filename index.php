@@ -385,7 +385,46 @@
             }
         }
     </style>
+<style>
+    /* ... (keep all existing styles) ... */
 
+    /* Update button colors for each card */
+    .btn-tamu-umum {
+        background: linear-gradient(45deg, #2b5876, #4e4376);
+        box-shadow: 0 4px 15px rgba(43, 88, 118, 0.2);
+    }
+    .btn-tamu-umum:hover {
+        background: linear-gradient(45deg, #4e4376, #2b5876);
+        box-shadow: 0 6px 20px rgba(43, 88, 118, 0.3);
+    }
+
+    .btn-survey {
+        background: linear-gradient(45deg, #11998e, #38ef7d);
+        box-shadow: 0 4px 15px rgba(17, 153, 142, 0.2);
+    }
+    .btn-survey:hover {
+        background: linear-gradient(45deg, #38ef7d, #11998e);
+        box-shadow: 0 6px 20px rgba(17, 153, 142, 0.3);
+    }
+
+    .btn-nilai {
+        background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        box-shadow: 0 4px 15px rgba(255, 65, 108, 0.2);
+    }
+    .btn-nilai:hover {
+        background: linear-gradient(45deg, #ff4b2b, #ff416c);
+        box-shadow: 0 6px 20px rgba(255, 65, 108, 0.3);
+    }
+
+    .btn-admin {
+        background: linear-gradient(45deg, #f46b45, #eea849);
+        box-shadow: 0 4px 15px rgba(244, 107, 69, 0.2);
+    }
+    .btn-admin:hover {
+        background: linear-gradient(45deg, #eea849, #f46b45);
+        box-shadow: 0 6px 20px rgba(244, 107, 69, 0.3);
+    }
+</style>
 
     <!-- Menu Cards -->
     <div class="card-container">

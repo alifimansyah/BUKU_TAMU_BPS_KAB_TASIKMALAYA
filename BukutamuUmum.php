@@ -352,8 +352,8 @@ if ($petugas) {
 <body>
     <div class="container">
         <div class="header-logo">
-            <img src="uploads/logo pst (1).svg" alt="BPS Logo">
-            <h2>BUKU TAMU UMUM</h2>
+            <img src="images/logo_BPS.png" alt="BPS Logo">
+            <h2>BUKU TAMU BPS KABUPATEN TASIKMALAYA</h2>
         </div>
 
         <!-- Buku Tamu Form -->
@@ -368,18 +368,23 @@ if ($petugas) {
             </div>
 
             <!-- Menampilkan operator login atau fallback -->
-            <div class="officer-info">
-                <img src="<?= $foto_petugas ?>" alt="Foto Operator" class="officer-photo">
-                <div class="officer-details">
-                    <?php if ($petugas): ?>
-                        <div class="officer-name"><i class="fas fa-user-tie"></i> <?= htmlspecialchars($nama_petugas) ?></div>
-                        <div class="officer-nip"><i class="fas fa-id-card"></i> NIP: <?= htmlspecialchars($nip_petugas) ?></div>
-                    <?php else: ?>
-                        <div class="officer-name"><i class="fas fa-exclamation-triangle"></i> Petugas Piket Tidak Tersedia</div>
-                        <div class="officer-nip">Silakan isi buku tamu secara mandiri</div>
-                    <?php endif; ?>
-                </div>
-            </div>
+            <?php if ($petugas && strtoupper($petugas['Nama']) !== 'ADMIN PST KAB TASIKMALAYA'): ?>
+    <div class="officer-info">
+        <img src="<?= $foto_petugas ?>" alt="Foto Operator" class="officer-photo">
+        <div class="officer-details">
+            <div class="officer-name"><i class="fas fa-user-tie"></i> <?= htmlspecialchars($nama_petugas) ?></div>
+            <div class="officer-nip"><i class="fas fa-id-card"></i> NIP: <?= htmlspecialchars($nip_petugas) ?></div>
+        </div>
+    </div>
+<?php else: ?>
+    <div class="officer-info">
+        <img src="<?= $foto_petugas ?>" alt="Foto Operator" class="officer-photo">
+        <div class="officer-details">
+            <div class="officer-name"><i class="fas fa-exclamation-triangle"></i> Petugas Piket Tidak Tersedia</div>
+            <div class="officer-nip">Silakan isi buku tamu secara mandiri</div>
+        </div>
+    </div>
+<?php endif; ?>
 
             <form action="submit_umum.php" method="POST">
                 <input type="hidden" name="tanggal" value="<?= $current_datetime ?>">

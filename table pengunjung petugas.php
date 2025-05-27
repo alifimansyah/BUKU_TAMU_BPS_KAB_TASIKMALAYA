@@ -54,17 +54,17 @@ $result = mysqli_query($koneksi, $query);
         .main-content {
             background-color: #f8f9fa;
         }
-        
+
         .bps-theme {
             background-color: #1a237e;
             color: white;
         }
-        
+
         .btn-bps {
             background-color: #1a237e;
             color: white;
         }
-        
+
         .btn-bps:hover {
             background-color: #303f9f;
             color: white;
@@ -79,7 +79,7 @@ $result = mysqli_query($koneksi, $query);
             <div class="col-md-3 col-lg-2 sidebar p-0">
                 <div class="p-3 text-center">
                     <h4><i class="fas fa-book-open me-2"></i>Buku Tamu</h4>
-                    <p class="mb-0">BPS Tasikmalaya</p>
+                    <p class="mb-0">BPS Kab Tasikmalaya</p>
                     <?php if (isset($_SESSION['username'])): ?>
                         <span>Login sebagai: <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong></span><br>
                     <?php endif; ?>
@@ -90,6 +90,9 @@ $result = mysqli_query($koneksi, $query);
                         <ul class="nav flex-column">
                             <li class="nav-item">
                                 <a class="nav-link active" href="table_pengunjung_petugas.php"><i class="fas fa-users me-2"></i> Data Pengunjung</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="data_notulensi.php"><i class="fas fa-file-alt me-2"></i> Data Notulensi</a>
                             </li>
                             <li class="nav-item px-3 text-center">
                                 <a href="?logout=1" class="btn btn-danger btn-sm mt-2 w-50"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -102,136 +105,138 @@ $result = mysqli_query($koneksi, $query);
             <!-- Main Content -->
             <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4 main-content">
                 <?php if (isset($_SESSION['error'])): ?>
-                    <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?></div>
+                    <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']);
+                                                    unset($_SESSION['error']); ?></div>
                 <?php endif; ?>
-                
+
                 <?php if (isset($_SESSION['success'])): ?>
-                    <div class="alert alert-success"><?= htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?></div>
+                    <div class="alert alert-success"><?= htmlspecialchars($_SESSION['success']);
+                                                        unset($_SESSION['success']); ?></div>
                 <?php endif; ?>
 
-               <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-users me-2"></i>Data Pengunjung</h2>
-    <button id="btnTambahPengunjung" class="btn btn-bps">
-        <i class="fas fa-plus me-1"></i> Tambah Pengunjung
-    </button>
-</div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="fas fa-users me-2"></i>Data Pengunjung</h2>
+                    <button id="btnTambahPengunjung" class="btn btn-bps">
+                        <i class="fas fa-plus me-1"></i> Tambah Pengunjung
+                    </button>
+                </div>
 
-<!-- Form Tambah Pengunjung (Initially Hidden) -->
-<div id="formTambah" class="form-tambah card shadow-sm" style="display: none;">
-    <div class="card-header bps-theme">
-        <h5 class="mb-0">Form Tambah Data Pengunjung</h5>
-    </div>
-    <div class="card-body">
-        <form method="POST" action="">
-            <input type="hidden" name="tambah_pengunjung" value="1">
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="jenis_tamu" class="form-label">Jenis Tamu</label>
-                    <select class="form-select" id="jenis_tamu" name="jenis_tamu" required>
-                        <option value="">Pilih Jenis Tamu</option>
-                        <option value="Umum">Tamu Umum</option>
-                        <option value="Instansi">Tamu PST</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="nama" class="form-label">Nama Lengkap</label>
-                    <input type="text" class="form-control" id="nama" name="nama" required>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="instansi" class="form-label">Instansi</label>
-                    <select class="form-select" id="instansi" name="instansi" required>
-                        <option value="">Pilih Asal Tamu</option>
-                        <option value="Pemerintah">Instansi/Dinas/Lembaga Pemerintah</option>
-                        <option value="Swasta">Perusahaan Swasta</option>
-                        <option value="Pendidikan">Pelajar/Mahasiswa</option>
-                        <option value="Perorangan">Masyarakat Umum</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="nama_instansi" class="form-label">Nama Instansi</label>
-                    <input type="text" class="form-control" id="nama_instansi" name="nama_instansi" required>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="keperluan" class="form-label">Keperluan</label>
-                    <select class="form-select" id="keperluan" name="keperluan" required>
-                        <option value="" disabled selected>Pilih keperluan kunjungan</option>
-                        <option value="Konsultasi Statistik">Konsultasi Data Statistik</option>
-                        <option value="Perpustakaan">Layanan Perpustakaan</option>
-                        <option value="Rekomendasi kegiatan statistik">Pelayanan Rekomendasi Kegiatan Statistik</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="keterangan_keperluan" class="form-label">Keterangan Keperluan</label>
-                    <input type="text" class="form-control" id="keterangan_keperluan" name="keterangan_keperluan">
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="no_wa" class="form-label">No. WhatsApp Aktif</label>
-                    <input type="text" class="form-control" id="no_wa" name="no_wa" required>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Kesan Pelayanan</label><br>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="kesan_pelayanan" id="kesan1" value="1 😞 Buruk" required>
-                        <label class="form-check-label" for="kesan1">😞 Buruk</label>
+                <!-- Form Tambah Pengunjung (Initially Hidden) -->
+                <div id="formTambah" class="form-tambah card shadow-sm" style="display: none;">
+                    <div class="card-header bps-theme">
+                        <h5 class="mb-0">Form Tambah Data Pengunjung</h5>
                     </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="kesan_pelayanan" id="kesan2" value="2 😐 Kurang Baik">
-                        <label class="form-check-label" for="kesan2">😐 Kurang Baik</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="kesan_pelayanan" id="kesan3" value="3 🙂 Cukup">
-                        <label class="form-check-label" for="kesan3">🙂 Cukup</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="kesan_pelayanan" id="kesan4" value="4 😊 Baik">
-                        <label class="form-check-label" for="kesan4">😊 Baik</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="kesan_pelayanan" id="kesan5" value="5 😍 Baik Sekali">
-                        <label class="form-check-label" for="kesan5">😍 Baik Sekali</label>
+                    <div class="card-body">
+                        <form method="POST" action="">
+                            <input type="hidden" name="tambah_pengunjung" value="1">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="jenis_tamu" class="form-label">Jenis Tamu</label>
+                                    <select class="form-select" id="jenis_tamu" name="jenis_tamu" required>
+                                        <option value="">Pilih Jenis Tamu</option>
+                                        <option value="Umum">Tamu Umum</option>
+                                        <option value="Instansi">Tamu PST</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="nama" class="form-label">Nama Lengkap</label>
+                                    <input type="text" class="form-control" id="nama" name="nama" required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="instansi" class="form-label">Instansi</label>
+                                    <select class="form-select" id="instansi" name="instansi" required>
+                                        <option value="">Pilih Asal Tamu</option>
+                                        <option value="Pemerintah">Instansi/Dinas/Lembaga Pemerintah</option>
+                                        <option value="Swasta">Perusahaan Swasta</option>
+                                        <option value="Pendidikan">Pelajar/Mahasiswa</option>
+                                        <option value="Perorangan">Masyarakat Umum</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="nama_instansi" class="form-label">Nama Instansi</label>
+                                    <input type="text" class="form-control" id="nama_instansi" name="nama_instansi" required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="keperluan" class="form-label">Keperluan</label>
+                                    <select class="form-select" id="keperluan" name="keperluan" required>
+                                        <option value="" disabled selected>Pilih keperluan kunjungan</option>
+                                        <option value="Konsultasi Statistik">Konsultasi Data Statistik</option>
+                                        <option value="Perpustakaan">Layanan Perpustakaan</option>
+                                        <option value="Rekomendasi kegiatan statistik">Pelayanan Rekomendasi Kegiatan Statistik</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="keterangan_keperluan" class="form-label">Keterangan Keperluan</label>
+                                    <input type="text" class="form-control" id="keterangan_keperluan" name="keterangan_keperluan">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="no_wa" class="form-label">No. WhatsApp Aktif</label>
+                                    <input type="text" class="form-control" id="no_wa" name="no_wa" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Kesan Pelayanan</label><br>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="kesan_pelayanan" id="kesan1" value="1 😞 Buruk" required>
+                                        <label class="form-check-label" for="kesan1">😞 Buruk</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="kesan_pelayanan" id="kesan2" value="2 😐 Kurang Baik">
+                                        <label class="form-check-label" for="kesan2">😐 Kurang Baik</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="kesan_pelayanan" id="kesan3" value="3 🙂 Cukup">
+                                        <label class="form-check-label" for="kesan3">🙂 Cukup</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="kesan_pelayanan" id="kesan4" value="4 😊 Baik">
+                                        <label class="form-check-label" for="kesan4">😊 Baik</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="kesan_pelayanan" id="kesan5" value="5 😍 Baik Sekali">
+                                        <label class="form-check-label" for="kesan5">😍 Baik Sekali</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="button" id="btnBatal" class="btn btn-secondary me-md-2">
+                                    <i class="fas fa-times me-1"></i> Batal
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i> Simpan Data
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </div>
 
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button type="button" id="btnBatal" class="btn btn-secondary me-md-2">
-                    <i class="fas fa-times me-1"></i> Batal
-                </button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save me-1"></i> Simpan Data
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
+                <script>
+                    // JavaScript to handle form show/hide
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const btnTambah = document.getElementById('btnTambahPengunjung');
+                        const btnBatal = document.getElementById('btnBatal');
+                        const formTambah = document.getElementById('formTambah');
 
-<script>
-// JavaScript to handle form show/hide
-document.addEventListener('DOMContentLoaded', function() {
-    const btnTambah = document.getElementById('btnTambahPengunjung');
-    const btnBatal = document.getElementById('btnBatal');
-    const formTambah = document.getElementById('formTambah');
-    
-    // Show form when Tambah Pengunjung button is clicked
-    btnTambah.addEventListener('click', function() {
-        formTambah.style.display = 'block';
-    });
-    
-    // Hide form when Batal button is clicked
-    btnBatal.addEventListener('click', function() {
-        formTambah.style.display = 'none';
-    });
-});
-</script>
+                        // Show form when Tambah Pengunjung button is clicked
+                        btnTambah.addEventListener('click', function() {
+                            formTambah.style.display = 'block';
+                        });
+
+                        // Hide form when Batal button is clicked
+                        btnBatal.addEventListener('click', function() {
+                            formTambah.style.display = 'none';
+                        });
+                    });
+                </script>
 
                 <!-- Tabel Data Pengunjung -->
                 <div class="card shadow-sm">
@@ -320,4 +325,5 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     </script>
 </body>
+
 </html>
