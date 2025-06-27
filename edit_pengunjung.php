@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Update data dengan prepared statement (tanpa kesan pelayanan, pembahasan, catatan_lain)
+    // Update data dengan prepared statement
     $query = "UPDATE tamu_umum SET 
         tanggal = ?, 
         jenis_Tamu = ?, 
@@ -47,7 +47,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         keperluan = ?, 
         No_wa_Aktif = ?, 
         keterangan_keperluan = ?,
-        petugas = ?
+        petugas = ?,
+        pembahasan = ?,
+        catatan_lain = ?,
+        `kesan pelayanan` = ?,
+        Rating_Fasilitas = ?,
+        Rating_Kepuasan = ?
         WHERE No_Pengunjung = ?";
 
     $petugas = $_SESSION['username'] ?? 'System';
@@ -55,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = mysqli_prepare($koneksi, $query);
     mysqli_stmt_bind_param(
         $stmt,
-        "sssssssssi",
+        "ssssssssssssssi",
         $_POST['tanggal'],
         $_POST['jenis_Tamu'],
         $_POST['nama'],
@@ -65,6 +70,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_POST['No_wa_Aktif'],
         $_POST['keterangan_keperluan'],
         $petugas,
+        $_POST['pembahasan'],
+        $_POST['catatan_lain'],
+        $_POST['kesan_pelayanan'],
+        $_POST['Rating_Fasilitas'],
+        $_POST['Rating_Kepuasan'],
         $id
     );
 
@@ -120,21 +130,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-bottom: 20px;
         }
 
-        .btn-trigger {
-            background: linear-gradient(45deg, #28a745, #20c997);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .btn-trigger:hover {
-            background: linear-gradient(45deg, #20c997, #28a745);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-            color: white;
+        .rating-section {
+            background: rgba(13, 110, 253, 0.1);
+            border-left: 4px solid #0d6efd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -151,33 +152,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h4><i class="fas fa-user-edit me-2"></i>Edit Data Pengunjung</h4>
             </div>
             <div class="card-body">
-                <!-- Info Penilaian -->
-                <div class="penilaian-info">
-                    <h6><i class="fas fa-info-circle me-2"></i>Informasi Penilaian</h6>
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <p class="mb-0">Tamu dapat memberikan penilaian pelayanan melalui form khusus. Klik tombol di samping untuk memicu form penilaian.</p>
-                            <?php if (!empty($data['kesan pelayanan'])): ?>
-                                <small class="text-success">
-                                    <i class="fas fa-check-circle me-1"></i>
-                                    Status: Sudah dinilai - <?= htmlspecialchars($data['kesan pelayanan']) ?>
-                                </small>
-                            <?php else: ?>
-                                <small class="text-warning">
-                                    <i class="fas fa-clock me-1"></i>
-                                    Status: Belum dinilai
-                                </small>
-                            <?php endif; ?>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <a href="form_penilaian.php?id=<?= $data['No_Pengunjung'] ?>"
-                                target="_blank" class="btn btn-trigger">
-                                <i class="fas fa-star me-2"></i>Trigger Penilaian
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
                 <form method="POST">
                     <div class="row mb-3">
                         <div class="col-md-6">
@@ -186,19 +160,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 value="<?= date('Y-m-d\TH:i', strtotime($data['tanggal'])) ?>" required>
                         </div>
                         <div class="col-md-6">
+                            <label for="petugas" class="form-label">Petugas</label>
+                            <input type="text" class="form-control" name="petugas" 
+                                value="<?= htmlspecialchars($data['petugas'] ?? $_SESSION['username'] ?? 'System') ?>" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
                             <label for="jenis_Tamu" class="form-label">Jenis Tamu</label>
                             <select class="form-select" name="jenis_Tamu" required>
                                 <option value="Umum" <?= $data['Jenis_Tamu'] == 'Umum' ? 'selected' : '' ?>>Tamu Umum</option>
                                 <option value="Instansi" <?= $data['Jenis_Tamu'] == 'Instansi' ? 'selected' : '' ?>>Tamu PST</option>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="nama" class="form-label">Nama Lengkap</label>
                             <input type="text" class="form-control" name="nama" value="<?= htmlspecialchars($data['nama']) ?>" required>
                         </div>
+                    </div>
+
+                    <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="instansi" class="form-label">Jenis Instansi</label>
                             <select class="form-select" name="instansi">
@@ -209,13 +191,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <option value="Perorangan" <?= $data['instansi'] == 'Perorangan' ? 'selected' : '' ?>>Masyarakat Umum</option>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="nama_instansi" class="form-label">Nama Instansi</label>
                             <input type="text" class="form-control" name="nama_instansi" value="<?= htmlspecialchars($data['nama_instansi']) ?>">
                         </div>
+                    </div>
+
+                    <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="keperluan" class="form-label">Keperluan</label>
                             <select class="form-select" name="keperluan">
@@ -225,30 +207,71 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <option value="Rekomendasi kegiatan statistik" <?= $data['keperluan'] == 'Rekomendasi kegiatan statistik' ? 'selected' : '' ?>>Pelayanan Rekomendasi Kegiatan Statistik</option>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="keterangan_keperluan" class="form-label">Keterangan Keperluan</label>
                             <input type="text" class="form-control" name="keterangan_keperluan" value="<?= htmlspecialchars($data['keterangan_keperluan']) ?>">
                         </div>
+                    </div>
+
+                    <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="No_wa_Aktif" class="form-label">No. WhatsApp Aktif</label>
                             <input type="text" class="form-control" name="No_wa_Aktif" value="<?= htmlspecialchars($data['No_wa_Aktif']) ?>" required>
                         </div>
+                        <div class="col-md-6">
+                            <label for="pembahasan" class="form-label">Pembahasan</label>
+                            <input type="text" class="form-control" name="pembahasan" value="<?= htmlspecialchars($data['pembahasan']) ?>">
+                        </div>
                     </div>
 
-                    <!-- Tampilkan data penilaian jika sudah ada (read-only) - hanya kesan pelayanan -->
-                    <?php if (!empty($data['kesan pelayanan'])): ?>
-                        <div class="card mb-3" style="background: rgba(40, 167, 69, 0.05);">
-                            <div class="card-header" style="background: rgba(40, 167, 69, 0.1); color: #155724;">
-                                <h6 class="mb-0"><i class="fas fa-star me-2"></i>Data Penilaian Tamu</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="catatan_lain" class="form-label">Catatan Lain</label>
+                            <input type="text" class="form-control" name="catatan_lain" value="<?= htmlspecialchars($data['catatan_lain']) ?>">
+                        </div>
+                    </div>
+
+                    <!-- Rating Section -->
+                    <div class="rating-section">
+                        <h5><i class="fas fa-star me-2"></i>Penilaian</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="kesan_pelayanan" class="form-label">Kesan Pelayanan</label>
+                                <select class="form-select" name="kesan_pelayanan">
+                                    <option value="">Pilih Kesan</option>
+                                   <option value="5 ⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
+                                   <option value="4 ⭐⭐⭐⭐">⭐⭐⭐⭐</option>
+                                   <option value="3 ⭐⭐⭐">⭐⭐⭐</option>
+                                   <option value="2 ⭐⭐">⭐⭐</option>
+                                   <option value="1 ⭐">⭐</option>
+                                </select>
                             </div>
-                            <div class="card-body">
-                                <p class="mb-0"><strong>Kesan Pelayanan:</strong> <?= htmlspecialchars($data['kesan pelayanan']) ?></p>
+                            <div class="col-md-4">
+                                <label for="Rating_Fasilitas" class="form-label">Rating Fasilitas</label>
+                                <select class="form-select" name="Rating_Fasilitas">
+                                    <option value="">Pilih Rating</option>
+                                     <option value="5 ⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
+                                   <option value="4 ⭐⭐⭐⭐">⭐⭐⭐⭐</option>
+                                   <option value="3 ⭐⭐⭐">⭐⭐⭐</option>
+                                   <option value="2 ⭐⭐">⭐⭐</option>
+                                   <option value="1">⭐</option>
+                                </select>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="Rating_Kepuasan" class="form-label">Rating Kepuasan</label>
+                                <select class="form-select" name="Rating_Kepuasan">
+                                    <option value="">Pilih Rating</option>
+                                     <option value="5 ⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
+                                   <option value="4 ⭐⭐⭐⭐">⭐⭐⭐⭐</option>
+                                   <option value="3 ⭐⭐⭐">⭐⭐⭐</option>
+                                   <option value="2 ⭐⭐">⭐⭐</option>
+                                   <option value="1 ⭐">⭐</option>
+                                </select>
+                                </select>
                             </div>
                         </div>
-                    <?php endif; ?>
+                    </div>
 
                     <div class="d-flex justify-content-between">
                         <a href="table pengunjung.php" class="btn btn-secondary">

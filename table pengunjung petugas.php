@@ -89,10 +89,10 @@ $result = mysqli_query($koneksi, $query);
                         <a class="nav-link" href="index.php"><i class="fas fa-tachometer-alt me-2"></i> isi buku tamu</a>
                         <ul class="nav flex-column">
                             <li class="nav-item">
-                                <a class="nav-link active" href="table_pengunjung_petugas.php"><i class="fas fa-users me-2"></i> Data Pengunjung</a>
+                                <a class="nav-link active" href="table pengunjung petugas.php"><i class="fas fa-users me-2"></i> Data Pengunjung</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="data_notulensi.php"><i class="fas fa-file-alt me-2"></i> Data Notulensi</a>
+                                <a class="nav-link" href="isi_notulensi.php"><i class="fas fa-file-alt me-2"></i> Data Notulensi</a>
                             </li>
                             <li class="nav-item px-3 text-center">
                                 <a href="?logout=1" class="btn btn-danger btn-sm mt-2 w-50"><i class="fas fa-sign-out-alt"></i> Logout</a>

@@ -27,13 +27,25 @@ if (!$pegawai) {
     exit();
 }
 
+// Daftar hari yang tersedia
+$all_days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nama = mysqli_real_escape_string($koneksi, $_POST['nama']);
     $username = mysqli_real_escape_string($koneksi, $_POST['username']);
     $new_nip = mysqli_real_escape_string($koneksi, $_POST['nip']);
-    $hari = mysqli_real_escape_string($koneksi, $_POST['hari']);
+    
+    // Handle multiple days selection
+    $selected_days = isset($_POST['hari']) ? $_POST['hari'] : [];
+    $hari = implode(',', $selected_days);
+    
     $role = mysqli_real_escape_string($koneksi, $_POST['role']);
-    $status = intval($_POST['status']);
+    
+    // Determine status automatically based on selected days
+    $current_day = date('N'); // 1 (Monday) through 7 (Sunday)
+    $day_names = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+    $current_day_name = $day_names[$current_day - 1];
+    $status = in_array($current_day_name, $selected_days) ? 1 : 0;
     
     // Cek NIP dan username sudah ada atau belum (kecuali milik sendiri)
     $check_nip = mysqli_query($koneksi, "SELECT NIP FROM tb_operator WHERE NIP = '$new_nip' AND NIP != '$nip'");
@@ -109,6 +121,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Edit Pegawai - BPS Tasikmalaya</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .day-checkbox {
+            display: inline-block;
+            margin-right: 15px;
+        }
+    </style>
 </head>
 <body class="bg-light">
     <div class="container mt-5">
@@ -165,37 +183,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 </div>
                             </div>
 
+                            <div class="mb-3">
+                            <label class="form-label">Hari Piket</label>
                             <div class="row">
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="hari" class="form-label">Hari Piket</label>
-                                        <select class="form-control" id="hari" name="hari">
-                                            <option value="">Pilih Hari</option>
-                                            <option value="Senin" <?= $pegawai['Hari'] == 'Senin' ? 'selected' : '' ?>>Senin</option>
-                                            <option value="Selasa" <?= $pegawai['Hari'] == 'Selasa' ? 'selected' : '' ?>>Selasa</option>
-                                            <option value="Rabu" <?= $pegawai['Hari'] == 'Rabu' ? 'selected' : '' ?>>Rabu</option>
-                                            <option value="Kamis" <?= $pegawai['Hari'] == 'Kamis' ? 'selected' : '' ?>>Kamis</option>
-                                            <option value="Jumat" <?= $pegawai['Hari'] == 'Jumat' ? 'selected' : '' ?>>Jumat</option>
-                                        </select>
+                                <?php 
+                                $current_days = !empty($pegawai['Hari']) ? explode(',', $pegawai['Hari']) : [];
+                                foreach ($all_days as $day): 
+                                    $checked = in_array($day, $current_days) ? 'checked' : '';
+                                ?>
+                                <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="hari_<?= strtolower($day) ?>" 
+                                            name="hari[]" value="<?= htmlspecialchars($day) ?>" <?= $checked ?>>
+                                        <label class="form-check-label" for="hari_<?= strtolower($day) ?>">
+                                            <?= htmlspecialchars($day) ?>
+                                        </label>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <?php endforeach; ?>
+                            </div>
+                            <small class="text-muted">Centang hari-hari ketika pegawai bertugas (bisa pilih lebih dari satu)</small>
+                        </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="role" class="form-label">Role</label>
                                         <select class="form-control" id="role" name="role" required>
                                             <option value="">Pilih Role</option>
                                             <option value="adminPST" <?= $pegawai['Role'] == 'adminPST' ? 'selected' : '' ?>>Admin PST</option>
-                                            <option value="Petugas PS" <?= $pegawai['Role'] == 'Petugas PS' ? 'selected' : '' ?>>Petugas PST</option>
+                                            <option value="Petugas PST" <?= $pegawai['Role'] == 'Petugas PST' ? 'selected' : '' ?>>Petugas PST</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="status" class="form-label">Status</label>
-                                        <select class="form-control" id="status" name="status" required>
-                                            <option value="1" <?= $pegawai['Status'] == 1 ? 'selected' : '' ?>>Aktif</option>
-                                            <option value="0" <?= $pegawai['Status'] == 0 ? 'selected' : '' ?>>Non-Aktif</option>
-                                        </select>
+                                        <label class="form-label">Status</label>
+                                        <div class="form-control-plaintext">
+                                            <?php 
+                                            $current_day = date('N');
+                                            $day_names = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+                                            $current_day_name = $day_names[$current_day - 1];
+                                            $is_active = in_array($current_day_name, $current_days);
+                                            ?>
+                                            Status akan otomatis <?= $is_active ? 'Aktif' : 'Non-Aktif' ?> (hari ini <?= $current_day_name ?>)
+                                        </div>
+                                        <input type="hidden" name="status" value="<?= $is_active ? 1 : 0 ?>">
                                     </div>
                                 </div>
                             </div>

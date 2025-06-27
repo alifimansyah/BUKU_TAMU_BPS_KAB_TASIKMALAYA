@@ -91,7 +91,14 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                     <th>Keperluan</th>
                     <th>Keterangan Keperluan</th>
                     <th>No WA</th>
+                    <th>Pembahasan</th>
+                    <th>Catatan Lain</th>
                     <th>Kesan Pelayanan</th>
+                    <th>Rating_Fasilitas</th>
+                    <th>Rating_Kepuasan</th>
+                    <th>Catatan Pelayanan</th>
+                    <th>Catatan Fasilitas</th>
+                    <th>Catatan Kepuasan</th>
                 </tr>';
 
     if ($result && mysqli_num_rows($result) > 0) {
@@ -100,6 +107,7 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
             $output .= '<tr>
                         <td>' . $no++ . '</td>
                         <td>' . date('d/m/Y H:i', strtotime($row['tanggal'])) . '</td>
+                        <td>' . htmlspecialchars($row['petugas']) . '</td>
                         <td>' . htmlspecialchars($row['Jenis_Tamu']) . '</td>
                         <td>' . htmlspecialchars($row['nama']) . '</td>
                         <td>' . htmlspecialchars($row['instansi']) . '</td>
@@ -107,7 +115,14 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                         <td>' . htmlspecialchars($row['keperluan']) . '</td>
                         <td>' . htmlspecialchars($row['keterangan_keperluan'] ?? '-') . '</td>
                         <td>' . htmlspecialchars($row['No_wa_Aktif']) . '</td>
+                        <td>' . htmlspecialchars($row['Pembahasan'] ?? '-') . '</td>
+                        <td>' . htmlspecialchars($row['catatan_lain'] ?? '-') . '</td>
                         <td>' . htmlspecialchars($row['kesan pelayanan']) . '</td>
+                        <td>' . htmlspecialchars($row['Rating_Fasilitas'] ?? '-') . '</td>
+                        <td>' . htmlspecialchars($row['Rating_Kepuasan'] ?? '-') . '</td>
+                        <td>' . htmlspecialchars($row['catatan_pelayanan'] ?? '-') . '</td>
+                        <td>' . htmlspecialchars($row['catatan_fasilitas'] ?? '-') . '</td>
+                        <td>' . htmlspecialchars($row['catatan_kepuasan'] ?? '-') . '</td>
                     </tr>';
         }
     } else {
@@ -172,7 +187,7 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                         <a class="nav-link" href="index.php"><i class="fas fa-tachometer-alt me-2"></i> isi buku tamu</a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="table pengunjung.php"><i class="fas fa-users me-2"></i> Data Pengunjung</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="laporan.php"><i class="fas fa-chart-bar me-2"></i> Laporan & Dasboard</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="laporan.php"><i class="fas fa-chart-bar me-2"></i> Laporan </a></li>
                     <li class="nav-item">
                         <a class="nav-link" href="data_notulensi.php"><i class="fas fa-file-alt me-2"></i> Data Notulensi</a>
                     </li>
@@ -307,6 +322,7 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                                     <tr>
                                         <th>No</th>
                                         <th>Tanggal</th>
+                                        <th>petugas</th>
                                         <th>Jenis Tamu</th>
                                         <th>Nama</th>
                                         <th>Instansi</th>
@@ -314,7 +330,14 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                                         <th>Keperluan</th>
                                         <th>Keterangan Keperluan</th>
                                         <th>No WA</th>
+                                        <th>Pembahasan</th>
+                                        <th>Tindak Lanjut</th>
                                         <th>Kesan Pelayanan</th>
+                                        <th>Rating Fasilitas</th>
+                                        <th>Rating Kepuasan</th>
+                                        <th>Catatan Pelayanan</th>
+                                        <th>Catatan Fasilitas</th>
+                                        <th>Catatan Kepuasan</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -324,6 +347,7 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                                             <tr>
                                                 <td><?= $no++ ?></td>
                                                 <td><?= date('d/m/Y H:i', strtotime($row['tanggal'])) ?></td>
+                                                <td><?= htmlspecialchars($row['petugas']) ?></td>
                                                 <td><?= htmlspecialchars($row['Jenis_Tamu']) ?></td>
                                                 <td><?= htmlspecialchars($row['nama']) ?></td>
                                                 <td><?= htmlspecialchars($row['instansi']) ?></td>
@@ -331,7 +355,14 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                                                 <td><?= htmlspecialchars($row['keperluan']) ?></td>
                                                 <td><?= htmlspecialchars($row['keterangan_keperluan'] ?? '-') ?></td>
                                                 <td><?= htmlspecialchars($row['No_wa_Aktif']) ?></td>
+                                                <td><?= htmlspecialchars($row['pembahasan'] ?? '-') ?></td>
+                                                <td><?= htmlspecialchars($row['catatan_lain'] ?? '-') ?></td>
                                                 <td><?= htmlspecialchars($row['kesan pelayanan'] ?? '-') ?></td>
+                                                <td><?= htmlspecialchars($row['Rating_Fasilitas'] ?? '-') ?></td>
+                                                <td><?= htmlspecialchars($row['Rating_Kepuasan'] ?? '-') ?></td>
+                                                <td><?= htmlspecialchars($row['catatan_pelayanan'] ?? '-') ?></td>
+                                                <td><?= htmlspecialchars($row['catatan_fasilitas'] ?? '-') ?></td>
+                                                <td><?= htmlspecialchars($row['catatan_kepuasan'] ?? '-') ?></td>
                                             </tr>
                                         <?php endwhile; ?>
                                     <?php else: ?>

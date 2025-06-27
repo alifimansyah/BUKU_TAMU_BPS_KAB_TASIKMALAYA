@@ -205,7 +205,7 @@ while ($row = mysqli_fetch_assoc($query)) {
                         <a class="nav-link" href="table pengunjung.php"><i class="fas fa-users me-2"></i> Data Pengunjung</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="laporan.php"><i class="fas fa-chart-bar me-2"></i> Laporan & Dashboard</a>
+                        <a class="nav-link" href="laporan.php"><i class="fas fa-chart-bar me-2"></i> Laporan</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="data_notulensi.php"><i class="fas fa-file-alt me-2"></i> Data Notulensi</a>
@@ -258,7 +258,7 @@ while ($row = mysqli_fetch_assoc($query)) {
                                         Hari Piket: <?= htmlspecialchars($p['Hari']) ?>
                                     </div>
                                 <?php endif; ?>
-
+                                
                                 <div class="card-actions">
                                     <a href="edit_pegawai.php?nip=<?= urlencode($p['NIP']) ?>" class="btn btn-warning">
                                         <i class="fas fa-edit"></i> Edit

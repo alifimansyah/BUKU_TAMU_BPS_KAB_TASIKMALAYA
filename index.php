@@ -338,7 +338,7 @@
                 <div class="title-container mx-4">
                     <div class="system-title text-center">
                         <h1 class="d-flex justify-content-center align-items-center">
-                            <i class="fas fa-chart-line me-2"></i>SILABUS BPS Kab. Tasikmalaya
+                            <i class="fas fa-chart-line me-2"></i>SILABUS BPS KABUPATEN TASIKMALAYA
                         </h1>
                         <p class="mb-0">SISTEM PELAPORAN BUKU TAMU PELAYANAN STATISTIK</p>
                     </div>
@@ -434,7 +434,7 @@
                 <div class="card-icon">
                     <i class="fas fa-book-open"></i>
                 </div>
-                <h3 class="card-title">Buku Tamu Umum</h3>
+                <h3 class="card-title">Buku Tamu</h3>
                 <p class="card-text">Isi buku tamu untuk pengunjung BPS Kabupaten Tasikmalaya</p>
                 <a href="BukutamuUmum.php" class="btn btn-menu">
                     <i class="fas fa-sign-in-alt me-2"></i>Isi Buku Tamu
@@ -470,25 +470,23 @@
             </div>
         </div>
 
-        <!-- Admin Card -->
-        <div class="card-menu">
-            <div class="card-body">
-                <div class="card-icon">
-                    <i class="fas fa-user-shield"></i>
-                </div>
-                <h3 class="card-title">Login Petugas</h3>
-                <p class="card-text">Akses sistem untuk administrator dan petugas BPS</p>
-                <a href="login.php" class="btn btn-menu btn-admin">
-                    <i class="fas fa-lock me-2"></i>Login Petugas
-                </a>
-            </div>
+         <div class="card-menu">
+    <div class="card-body">
+        <div class="card-icon">
+            <i class="fas fa-clipboard-list"></i> <!-- Changed from fa-star to fa-clipboard-list -->
         </div>
+        <h3 class="card-title">Login Admin</h3>
+        <p class="card-text">Akses ini Hanya diperuntukan untuk Admin</p> <!-- Updated text -->
+        <a href="login Admin.php" target="_blank" class="btn btn-menu btn-nilai">
+            <i class="fas fa-edit me-2"></i>Login Admin <!-- Changed icon to fa-edit -->
+        </a>
     </div>
+</div>
 
     <!-- Footer -->
     <div class="footer">
-        <p class="copyright">2025 BPS Kabupaten Tasikmalaya - SILABUS v1.1</p>
-        <p>Badan Pusat Statistik Kabupaten Tasikmalaya</p>
+        <p class="copyright">Copyright by BPS KABUPATEN TASIKMALAYA 2025 - SILABUS v1.1</p>
+    
     </div>
     </div>
 

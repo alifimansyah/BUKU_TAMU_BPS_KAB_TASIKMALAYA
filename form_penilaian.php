@@ -40,14 +40,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cari_data'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_penilaian'])) {
     $no_pengunjung = intval($_POST['no_pengunjung']);
     $kesan_pelayanan = mysqli_real_escape_string($koneksi, $_POST['kesan_pelayanan']);
+    $rating_fasilitas = mysqli_real_escape_string($koneksi, $_POST['rating_fasilitas']);
+    $rating_kepuasan = mysqli_real_escape_string($koneksi, $_POST['rating_kepuasan']);
+    $catatan_pelayanan = mysqli_real_escape_string($koneksi, $_POST['catatan_pelayanan'] ?? '');
+    $catatan_fasilitas = mysqli_real_escape_string($koneksi, $_POST['catatan_fasilitas'] ?? '');
+    $catatan_kepuasan = mysqli_real_escape_string($koneksi, $_POST['catatan_kepuasan'] ?? '');
 
     // Update data penilaian
     $query = "UPDATE tamu_umum SET 
-        `kesan pelayanan` = ?
+        `kesan pelayanan` = ?,
+        `Rating_Fasilitas` = ?,
+        `Rating_Kepuasan` = ?,
+        `catatan_pelayanan` = ?,
+        `catatan_fasilitas` = ?,
+        `catatan_kepuasan` = ?
         WHERE No_Pengunjung = ?";
 
     $stmt = mysqli_prepare($koneksi, $query);
-    mysqli_stmt_bind_param($stmt, "si", $kesan_pelayanan, $no_pengunjung);
+    mysqli_stmt_bind_param($stmt, "ssssssi", 
+        $kesan_pelayanan, 
+        $rating_fasilitas, 
+        $rating_kepuasan,
+        $catatan_pelayanan,
+        $catatan_fasilitas,
+        $catatan_kepuasan,
+        $no_pengunjung
+    );
 
     if (mysqli_stmt_execute($stmt)) {
         $success = "Terima kasih! Penilaian Anda telah berhasil disimpan.";
@@ -118,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_penilaian'])) {
         .rating-container {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             flex-wrap: wrap;
             margin: 20px 0;
         }
@@ -131,7 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_penilaian'])) {
             cursor: pointer;
             transition: all 0.3s ease;
             background: white;
-            min-width: 120px;
+            min-width: 100px;
         }
 
         .rating-option:hover {
@@ -144,23 +162,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_penilaian'])) {
             display: none;
         }
 
-        .rating-option input[type="radio"]:checked+.rating-content {
-            color: var(--bps-green);
-        }
-
-        .rating-option input[type="radio"]:checked {
-            border-color: var(--bps-green);
-        }
-
         .rating-option.selected {
             border-color: var(--bps-green);
             background: rgba(10, 158, 63, 0.1);
         }
 
-        .rating-emoji {
-            font-size: 2rem;
+        .rating-stars {
+            font-size: 1.8rem;
             margin-bottom: 5px;
             display: block;
+            color: #ffc107;
         }
 
         .rating-text {
@@ -200,6 +211,108 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_penilaian'])) {
             border-radius: 5px;
             margin-bottom: 20px;
         }
+        
+        .rating-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .rating-title {
+            color: var(--bps-blue);
+            margin-bottom: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .catatan-field {
+            margin-top: 15px;
+        }
+        
+        .catatan-field textarea {
+            min-height: 80px;
+        }
+
+        <style>
+    .rating-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .rating-option {
+        display: flex;
+        align-items: center;
+        border: 2px solid transparent;
+        padding: 10px 15px;
+        border-radius: 12px;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        transition: 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .rating-option:hover {
+        background-color: #eaf4ff;
+    }
+
+    .rating-option.selected {
+        background-color: #d0f0ff;
+        border-color: #20a8d8; /* Biru muda */
+    }
+
+    .rating-option input[type="radio"] {
+        display: none;
+    }
+
+    .rating-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 16px;
+        width: 100%;
+    }
+
+    .rating-stars {
+        font-family: 'Arial', sans-serif;
+        font-size: 20px;
+        color: #ff9800; /* Oranye */
+        min-width: 100px;
+        letter-spacing: 2px;
+    }
+
+    .rating-text {
+        font-weight: 600;
+        color: #28a745; /* Hijau BPS */
+    }
+
+    .catatan-field {
+        margin-top: 16px;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #333;
+    }
+
+    textarea.form-control {
+        border-radius: 10px;
+        border: 1px solid #ced4da;
+    }
+
+    button.btn-bps {
+        background-color: #20a8d8; /* Biru muda BPS */
+        color: #fff;
+        border: none;
+    }
+
+    button.btn-bps:hover {
+        background-color: #1b8eb7;
+    }
+
     </style>
 </head>
 
@@ -286,38 +399,156 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_penilaian'])) {
                     </div>
 
                     <!-- Form Penilaian -->
-                    <form method="POST">
-                        <input type="hidden" name="no_pengunjung" value="<?= $data['No_Pengunjung'] ?>">
+                   <?php
+                        $labelRating = [
+                            5 => 'Sangat Puas',
+                            4 => 'Puas',
+                            3 => 'Cukup',
+                            2 => 'Kurang Puas',
+                            1 => 'Tidak Puas'
+                        ];
+                        ?>
 
-                        <div class="mb-4">
-                            <label class="form-label"><strong>Bagaimana kesan Anda terhadap pelayanan yang diberikan?</strong></label>
-                            <div class="rating-container">
-                                <?php
-                                $rating_options = [
-                                    '1 😞 Buruk' => ['emoji' => '😞', 'text' => 'Buruk', 'color' => '#dc3545'],
-                                    '2 😐 Kurang Baik' => ['emoji' => '😐', 'text' => 'Kurang Baik', 'color' => '#fd7e14'],
-                                    '3 🙂 Cukup' => ['emoji' => '🙂', 'text' => 'Cukup', 'color' => '#ffc107'],
-                                    '4 😊 Baik' => ['emoji' => '😊', 'text' => 'Baik', 'color' => '#20c997'],
-                                    '5 😍 Baik Sekali' => ['emoji' => '😍', 'text' => 'Baik Sekali', 'color' => '#28a745']
-                                ];
+                        <form method="POST">
+                            <input type="hidden" name="no_pengunjung" value="<?= $data['No_Pengunjung'] ?>">
 
-                                $current_rating = $data['kesan pelayanan'] ?? '';
-
-                                foreach ($rating_options as $value => $option) {
-                                    $checked = ($current_rating == $value) ? 'checked' : '';
-                                    $selected = ($current_rating == $value) ? 'selected' : '';
-                                    echo "
-                                    <label class='rating-option $selected' onclick='selectRating(this)'>
-                                        <input type='radio' name='kesan_pelayanan' value='$value' $checked required>
-                                        <div class='rating-content'>
-                                            <span class='rating-emoji'>{$option['emoji']}</span>
-                                            <span class='rating-text'>{$option['text']}</span>
-                                        </div>
-                                    </label>";
-                                }
-                                ?>
+                            <!-- Rating Pelayanan -->
+                            <div class="rating-section">
+                                <h5 class="rating-title"><i class="fas fa-handshake me-2"></i>Rating petugas piket</h5>
+                                <p class="text-muted mb-3">Bagaimana kesan Anda terhadap pelayanan yang diberikan?</p>
+                                
+                                <div class="star-rating">
+                                    <?php 
+                                    $current_rating = isset($data['kesan pelayanan']) ? (int)substr($data['kesan pelayanan'], 0, 1) : 0;
+                                    for ($i = 5; $i >= 1; $i--): ?>
+                                        <input type="radio" id="pelayanan-star-<?= $i ?>" name="kesan_pelayanan" value="<?= $i ?> ⭐<?= str_repeat('⭐', $i-1) ?>" 
+                                            <?= ($current_rating == $i) ? 'checked' : '' ?>>
+                                        <label for="pelayanan-star-<?= $i ?>" title="<?= $labelRating[$i] ?>">⭐</label>
+                                    <?php endfor; ?>
+                                </div>
+                                
+                                <div class="rating-text-display" id="pelayanan-rating-text">
+                                    <?= isset($labelRating[$current_rating]) ? $labelRating[$current_rating] : 'Pilih rating'; ?>
+                                </div>
+                                
+                                <div class="catatan-field">
+                                    <label for="catatan_pelayanan" class="form-label">Catatan Tambahan (Opsional)</label>
+                                    <textarea class="form-control" name="catatan_pelayanan" 
+                                        placeholder="Berikan catatan khusus tentang pelayanan"><?= htmlspecialchars($data['catatan_pelayanan'] ?? '') ?></textarea>
+                                </div>
                             </div>
-                        </div>
+
+                            <!-- Rating Fasilitas -->
+                            <div class="rating-section">
+                                <h5 class="rating-title"><i class="fas fa-building me-2"></i>Rating Fasilitas PST</h5>
+                                <p class="text-muted mb-3">Bagaimana penilaian Anda terhadap fasilitas yang disediakan?</p>
+                                
+                                <div class="star-rating">
+                                    <?php 
+                                    $current_rating_fasilitas = isset($data['Rating_Fasilitas']) ? (int)substr($data['Rating_Fasilitas'], 0, 1) : 0;
+                                    for ($i = 5; $i >= 1; $i--): ?>
+                                        <input type="radio" id="fasilitas-star-<?= $i ?>" name="rating_fasilitas" value="<?= $i ?> ⭐<?= str_repeat('⭐', $i-1) ?>" 
+                                            <?= ($current_rating_fasilitas == $i) ? 'checked' : '' ?>>
+                                        <label for="fasilitas-star-<?= $i ?>" title="<?= $labelRating[$i] ?>">⭐</label>
+                                    <?php endfor; ?>
+                                </div>
+                                
+                                <div class="rating-text-display" id="fasilitas-rating-text">
+                                    <?= isset($labelRating[$current_rating_fasilitas]) ? $labelRating[$current_rating_fasilitas] : 'Pilih rating'; ?>
+                                </div>
+                                
+                                <div class="catatan-field">
+                                    <label for="catatan_fasilitas" class="form-label">Catatan Tambahan (Opsional)</label>
+                                    <textarea class="form-control" name="catatan_fasilitas" 
+                                        placeholder="Berikan catatan khusus tentang fasilitas"><?= htmlspecialchars($data['catatan_fasilitas'] ?? '') ?></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Rating Kepuasan -->
+                            <div class="rating-section">
+                                <h5 class="rating-title"><i class="fas fa-smile me-2"></i>Rating Kepuasan Layanan Data</h5>
+                                <p class="text-muted mb-3">Secara keseluruhan, bagaimana tingkat kepuasan Anda?</p>
+                                
+                                <div class="star-rating">
+                                    <?php 
+                                    $current_rating_kepuasan = isset($data['Rating_Kepuasan']) ? (int)substr($data['Rating_Kepuasan'], 0, 1) : 0;
+                                    for ($i = 5; $i >= 1; $i--): ?>
+                                        <input type="radio" id="kepuasan-star-<?= $i ?>" name="rating_kepuasan" value="<?= $i ?> ⭐<?= str_repeat('⭐', $i-1) ?>" 
+                                            <?= ($current_rating_kepuasan == $i) ? 'checked' : '' ?>>
+                                        <label for="kepuasan-star-<?= $i ?>" title="<?= $labelRating[$i] ?>">⭐</label>
+                                    <?php endfor; ?>
+                                </div>
+                                
+                                <div class="rating-text-display" id="kepuasan-rating-text">
+                                    <?= isset($labelRating[$current_rating_kepuasan]) ? $labelRating[$current_rating_kepuasan] : 'Pilih rating'; ?>
+                                </div>
+                                
+                                <div class="catatan-field">
+                                    <label for="catatan_kepuasan" class="form-label">Catatan Tambahan (Opsional)</label>
+                                    <textarea class="form-control" name="catatan_kepuasan" 
+                                        placeholder="Berikan catatan keseluruhan tentang kunjungan Anda"><?= htmlspecialchars($data['catatan_kepuasan'] ?? '') ?></textarea>
+                                </div>
+                            </div>
+
+                        <style>
+                        .star-rating {
+                            display: flex;
+                            justify-content: center;
+                            font-size: 2.5rem;
+                            line-height: 2.5rem;
+                            margin: 15px 0;
+                        }
+                        .star-rating input {
+                            display: none;
+                        }
+                        .star-rating label {
+                            color: #ddd;
+                            cursor: pointer;
+                            padding: 0 5px;
+                            transition: all 0.2s ease;
+                        }
+                        .star-rating input:checked ~ label,
+                        .star-rating label:hover,
+                        .star-rating label:hover ~ label {
+                            color: #ffcc00;
+                            transform: scale(1.1);
+                        }
+                        .rating-text-display {
+                            margin: 10px 0;
+                            font-weight: bold;
+                            font-size: 1.1rem;
+                            color: #005bae;
+                            text-align: center;
+                            min-height: 24px;
+                        }
+                        </style>
+
+<script>
+// Function to update rating text display
+function updateRatingText(ratingValue, displayElementId) {
+    const ratingTexts = {
+        '5': 'Sangat Puas',
+        '4': 'Puas',
+        '3': 'Cukup',
+        '2': 'Kurang Puas',
+        '1': 'Tidak Puas'
+    };
+    document.getElementById(displayElementId).textContent = ratingTexts[ratingValue] || 'Pilih rating';
+}
+
+// Initialize all star rating systems
+document.querySelectorAll('.star-rating').forEach(ratingContainer => {
+    const inputs = ratingContainer.querySelectorAll('input[type="radio"]');
+    const displayId = ratingContainer.nextElementSibling.id;
+    
+    inputs.forEach(input => {
+        input.addEventListener('change', function() {
+            updateRatingText(this.value.split(' ')[0], displayId);
+        });
+    });
+});
+</script>
+
 
                         <div class="text-center">
                             <button type="submit" name="submit_penilaian" class="btn btn-bps btn-lg">
@@ -339,8 +570,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_penilaian'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function selectRating(element) {
-            // Remove selected class from all options
-            document.querySelectorAll('.rating-option').forEach(option => {
+            // Remove selected class from all options in the same container
+            const container = element.closest('.rating-container');
+            container.querySelectorAll('.rating-option').forEach(option => {
                 option.classList.remove('selected');
             });
 
@@ -352,5 +584,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_penilaian'])) {
         }
     </script>
 </body>
-
 </html>

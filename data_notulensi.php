@@ -33,10 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_notulensi'])) {
     }
 }
 
-// Query untuk menampilkan data - hanya yang sudah ada kesan pelayanan (sudah selesai kunjungan)
+// Query untuk menampilkan semua data tamu, tidak bergantung pada kesan pelayanan
 $query = "SELECT No_Pengunjung, tanggal, nama, instansi, nama_instansi, petugas, pembahasan, catatan_lain, `kesan pelayanan`
           FROM tamu_umum 
-          WHERE `kesan pelayanan` IS NOT NULL AND `kesan pelayanan` != ''
           ORDER BY tanggal DESC";
 $result = mysqli_query($koneksi, $query);
 
@@ -47,7 +46,7 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
 
     $output = '<table border="1">
                 <tr>
-                    <th colspan="7" style="text-align:center; font-weight:bold;">DATA NOTULENSI KUNJUNGAN BPS TASIKMALAYA</th>
+                    <th colspan="10" style="text-align:center; font-weight:bold;">DATA NOTULENSI KUNJUNGAN BPS TASIKMALAYA</th>
                 </tr>
                 <tr>
                     <th>No</th>
@@ -58,12 +57,17 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                     <th>Petugas</th>
                     <th>Pembahasan</th>
                     <th>Catatan Lain</th>
+                    <th>Kesan Pelayanan</th>
+                    <th>Status</th>
                 </tr>';
 
     if ($result && mysqli_num_rows($result) > 0) {
         $no = 1;
-        mysqli_data_seek($result, 0); // Reset result pointer
+        mysqli_data_seek($result, 0);
         while ($row = mysqli_fetch_assoc($result)) {
+            $has_notulensi = !empty($row['pembahasan']) || !empty($row['catatan_lain']);
+            $status_text = $has_notulensi ? 'Lengkap' : 'Belum Lengkap';
+
             $output .= '<tr>
                         <td>' . $no++ . '</td>
                         <td>' . date('d/m/Y H:i', strtotime($row['tanggal'])) . '</td>
@@ -73,10 +77,12 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                         <td>' . htmlspecialchars($row['petugas'] ?? '-') . '</td>
                         <td>' . htmlspecialchars($row['pembahasan'] ?? '-') . '</td>
                         <td>' . htmlspecialchars($row['catatan_lain'] ?? '-') . '</td>
+                        <td>' . htmlspecialchars($row['kesan pelayanan'] ?? '-') . '</td>
+                        <td>' . $status_text . '</td>
                     </tr>';
         }
     } else {
-        $output .= '<tr><td colspan="8" style="text-align:center;">Tidak ada data notulensi</td></tr>';
+        $output .= '<tr><td colspan="10" style="text-align:center;">Tidak ada data notulensi</td></tr>';
     }
 
     $output .= '</table>';
@@ -84,6 +90,7 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
     exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -167,6 +174,22 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
             opacity: 0.8;
             color: white;
         }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .text-truncate {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .text-expand {
+            white-space: normal;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 
@@ -187,7 +210,7 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                         <a class="nav-link" href="table pengunjung.php"><i class="fas fa-users me-2"></i> Data Pengunjung</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="laporan.php"><i class="fas fa-chart-bar me-2"></i> Laporan & Dashboard</a>
+                        <a class="nav-link" href="laporan.php"><i class="fas fa-chart-bar me-2"></i> Laporan</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="data_notulensi.php"><i class="fas fa-file-alt me-2"></i> Data Notulensi</a>
@@ -287,7 +310,7 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                             </div>
 
                             <div class="mb-3">
-                                <label for="edit_catatan_lain" class="form-label">Catatan Lain</label>
+                                <label for="edit_catatan_lain" class="form-label">Tindak Lanjut
                                 <textarea class="form-control" id="edit_catatan_lain" name="catatan_lain" rows="3" 
                                           placeholder="Tuliskan catatan tambahan, tindak lanjut, atau hal penting lainnya..."></textarea>
                             </div>
@@ -320,7 +343,9 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                                         <th>Asal Tamu</th>
                                         <th>Nama Instansi</th>
                                         <th>Petugas</th>
-                                        <th>Status Notulensi</th>
+                                        <th>Pembahasan</th>
+                                        <th>Tindak Lanjut</th>
+                                        <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -334,23 +359,27 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                                             $status_text = $has_notulensi ? 'Lengkap' : 'Belum Lengkap';
                                             
                                             echo "<tr>
-                                            <td>" . $no++ . "</td>
-                                            <td>" . date('d/m/Y H:i', strtotime($row['tanggal'])) . "</td>
-                                            <td>" . htmlspecialchars($row['nama']) . "</td>
-                                            <td>" . htmlspecialchars($row['instansi']) . "</td>
-                                            <td>" . htmlspecialchars($row['nama_instansi']) . "</td>
-                                            <td>" . htmlspecialchars($row['petugas'] ?? '-') . "</td>
-                                            <td><span class='status-badge $status_class'>$status_text</span></td>
-                                            <td>
-                                                <button type='button' class='btn btn-edit-notulensi btn-sm' 
-                                                        onclick='editNotulensi(" . json_encode($row) . ")'>
-                                                    <i class='fas fa-edit'></i> Edit
-                                                </button>
-                                            </td>
-                                        </tr>";
+                                                <td>" . $no++ . "</td>
+                                                <td>" . date('d/m/Y H:i', strtotime($row['tanggal'])) . "</td>
+                                                <td>" . htmlspecialchars($row['nama']) . "</td>
+                                                <td>" . htmlspecialchars($row['instansi']) . "</td>
+                                                <td>" . htmlspecialchars($row['nama_instansi']) . "</td>
+                                                <td>" . htmlspecialchars($row['petugas'] ?? '-') . "</td>
+                                                <td class='text-truncate' title='" . htmlspecialchars($row['pembahasan'] ?? '') . "'>" . 
+                                                    (!empty($row['pembahasan']) ? htmlspecialchars($row['pembahasan']) : '-') . "</td>
+                                                <td class='text-truncate' title='" . htmlspecialchars($row['catatan_lain'] ?? '') . "'>" . 
+                                                    (!empty($row['catatan_lain']) ? htmlspecialchars($row['catatan_lain']) : '-') . "</td>
+                                                <td><span class='status-badge $status_class'>$status_text</span></td>
+                                                <td>
+                                                    <button type='button' class='btn btn-edit-notulensi btn-sm' 
+                                                            onclick='editNotulensi(" . json_encode($row) . ")'>
+                                                        <i class='fas fa-edit'></i> Edit
+                                                    </button>
+                                                </td>
+                                            </tr>";
                                         }
                                     } else {
-                                        echo "<tr><td colspan='8' class='text-center'>Tidak ada data notulensi</td></tr>";
+                                        echo "<tr><td colspan='10' class='text-center'>Tidak ada data notulensi</td></tr>";
                                     }
                                     ?>
                                 </tbody>
@@ -386,13 +415,24 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
                     text: '<i class="fas fa-file-excel"></i> Export Excel',
                     className: 'btn btn-success mb-3'
                 }],
-                order: [[1, 'desc']], // Sort by tanggal descending
-                pageLength: 25
+                order: [[1, 'asc']], // Sort by tanggal descending
+                pageLength: 25,
+                columnDefs: [
+                    { targets: [6, 7], className: 'text-truncate' },
+                    { targets: [0, 8, 9], className: 'text-center' }
+                ]
             });
 
             // Batal edit
             $('#btnBatal').click(function() {
                 $('#formEdit').slideUp();
+            });
+            
+            // Show full text on hover for truncated cells
+            $('#tabelNotulensi').on('mouseenter', '.text-truncate', function() {
+                $(this).addClass('text-expand').removeClass('text-truncate');
+            }).on('mouseleave', '.text-expand', function() {
+                $(this).addClass('text-truncate').removeClass('text-expand');
             });
         });
 

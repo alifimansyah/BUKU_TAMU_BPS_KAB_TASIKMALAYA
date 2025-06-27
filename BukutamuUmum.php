@@ -1,19 +1,29 @@
 <?php
 include 'config/koneksi.php';
 
-// Ambil data operator yang sedang online (status = 1/true)
-$query_petugas = mysqli_query($koneksi, "SELECT * FROM tb_operator WHERE status=1 LIMIT 1");
-$petugas = mysqli_fetch_assoc($query_petugas);
+// Ambil hari ini dalam bahasa Indonesia
+$hari_ini = date('N'); // 1 (Senin) sampai 7 (Minggu)
+$nama_hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+$hari_ini_nama = $nama_hari[$hari_ini - 1];
+
+// Ambil petugas yang bertugas hari ini (Hari LIKE '%hari_ini%' dan Status=1)
+$query_petugas = "SELECT * FROM tb_operator 
+                 WHERE Hari LIKE '%$hari_ini_nama%' AND Status=1
+                 ORDER BY Nama LIMIT 1";
+$result_petugas = mysqli_query($koneksi, $query_petugas);
+$petugas = mysqli_fetch_assoc($result_petugas);
 
 if ($petugas) {
     $nama_petugas = $petugas['Nama'];
     $nip_petugas = $petugas['NIP'];
     $foto_petugas = !empty($petugas['foto']) ? $petugas['foto'] : 'assets/img/default-user.png';
 } else {
-    $nama_petugas = '';
+    $nama_petugas = 'Petugas Tidak Tersedia';
     $nip_petugas = '';
     $foto_petugas = 'assets/img/default-user.png';
 }
+
+$current_datetime = date('Y-m-d H:i:s');
 ?>
 
 <!DOCTYPE html>
